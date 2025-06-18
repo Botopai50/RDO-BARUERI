@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RDO - Notas de Desenvolvimento</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; line-height: 1.6; }
+        header { background-color: #f0f0f0; padding: 10px; margin-bottom: 20px; border-bottom: 1px solid #ccc; }
+        h1 { margin: 0; }
+        h2 { border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        ul { list-style-type: disc; margin-left: 20px; }
+        .original-notes { background-color: #fff8dc; border: 1px dashed #ccc; padding: 10px; margin-top: 20px; white-space: pre-wrap; font-family: monospace;}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Notas para Desenvolvimento RDO</h1>
+    </header>
+
+    <main>
+        <h2>Lembretes Importantes:</h2>
+        <ul>
+            <li><strong>Edição Restrita:</strong> Apenas a primeira página do RDO (Dia 0, Folha A) deve permitir a edição dos campos do cabeçalho (Contratada, Data, etc.) e a adição/alteração da assinatura principal (CONSBEM). As demais páginas e dias subsequentes devem replicar essas informações automaticamente, aparecendo como somente leitura.</li>
+            <li><strong>Linha de Contorno das Fotos no PDF:</strong> No PDF gerado, a linha de contorno (moldura) ao redor de cada foto no relatório fotográfico deve estar visível.</li>
+            <li><strong>Cabeçalho no PDF:</strong> Certifique-se de que um cabeçalho apropriado (contendo logos, nome da empresa, título do relatório, etc.) seja desenhado no topo de cada página do documento PDF.</li>
+        </ul>
+
+        <div class="original-notes" aria-label="Notas originais preservadas">
+            <strong>Conteúdo Original do Arquivo (preservado para referência):</strong>
+            lembre-se que apenas a primeira pagina deve poder editar o cabeçalho e adicionar assinatura, o resto apenas pega essas informações da primeira pagina
+            deixe a linha do quadro da foto aparecendo no pdf
+            adicione um "header"
+        </div>
+    </main>
+
+    <footer>
+        <!-- Script incluído, conforme o arquivo original -->
+        <script type="module" src="index.tsx"></script>
+    </footer>
+
+</body>
+</html>

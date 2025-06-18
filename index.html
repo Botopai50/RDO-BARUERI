@@ -1,0 +1,723 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>RDO - Relatório Diário de Obras</title>
+        <link rel="stylesheet" href="index.css">
+        <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.4.0",
+    "marked": "https://esm.sh/marked@^15.0.12",
+    "jspdf": "https://esm.sh/jspdf@^2.5.1",
+    "jspdf-autotable": "https://esm.sh/jspdf-autotable@^3.8.2",
+    "react/": "https://esm.sh/react@^19.1.0/"
+  }
+}
+</script>
+    <link rel="stylesheet" href="/index.css">
+</head>
+    <body>
+        <header class="consbem-header">
+            <div class="consbem-logo">
+                <img src="https://i.imgur.com/edSpVAN.png" alt="CONSBEM Logo" class="header-main-logo-img">CONSBEM
+            </div>
+            <div class="consbem-header-actions">
+                <button id="saveProgressButton" class="header-action-button">Salvar Progresso</button>
+                <button id="generatePdfButton" class="header-action-button" aria-label="Baixar RDO como PDF">
+                    Baixar PDF
+                </button>
+            </div>
+        </header>
+
+        <div id="app-main-header">
+            <h1>RDO - Relatório Diário de Obras</h1>
+            <div id="header-actions-container">
+                <button id="fetchRainfallButton" class="header-action-button">Procurar Índice Pluviométrico</button>
+                <button id="loadEfetivoSpreadsheetButton" class="header-action-button">Carregar Efetivo</button>
+                <button id="clearEfetivoButton" class="header-action-button">Limpar Efetivo</button>
+                <input type="file" id="efetivoSpreadsheetUpload" accept=".csv" style="display: none;" aria-label="Selecione o arquivo CSV do efetivo">
+            </div>
+        </div>
+
+        <div id="day-navigation-panel" class="day-navigation-panel">
+            <div class="day-nav-title-bar">
+                <h2>DIAS</h2>
+            </div>
+            <div id="day-tabs-container">
+                <!-- Tabs will be dynamically added here -->
+            </div>
+        </div>
+
+        <div id="app-content-canvas">
+            <div id="rdo-all-days-wrapper">
+                <div class="rdo-day-wrapper" id="rdo_day_0_wrapper" data-day-index="0">
+                    <div class="rdo-container" id="rdo_day_0_page_0">
+                        <div class="header">
+                            <img src="https://i.imgur.com/dR8PwKc.png" alt="Sabesp Logo" class="header-logo sabesp-logo">
+                            <div class="titles">
+                                <h1>RDO - RELATÓRIO DIÁRIO DE OBRAS</h1>
+                                <h2>SABESP - COMPANHIA DE SANEAMENTO BÁSICO DO ESTADO DE SÃO PAULO</h2>
+                                <h3>AMPLIAÇÃO DA CAPACIDADE DE TRATAMENTO DA FASE SÓLIDA-ETE BARUERI PARA 16M³/S</h3>
+                            </div>
+                            <img src="https://i.imgur.com/GJU4562.png" alt="Consórcio Logo" class="header-logo consorcio-logo">
+                        </div>
+
+                        <div class="contract-info">
+                            <table>
+                                <tr>
+                                    <td style="width: 70%;">
+                                        <div class="label-input-pair">
+                                            <label for="contratada_day0">CONTRATADA:</label>
+                                            <input type="text" id="contratada_day0" class="contratada-input" value="Consórcio Consbem-Enfil-Aquamec-Barueri">
+                                        </div>
+                                    </td>
+                                    <td style="width: 20%;">
+                                        <div class="label-input-pair">
+                                            <label for="data_day0">DATA:</label>
+                                            <input type="date" id="data_day0" class="date-input" value="2025-04-01">
+                                        </div>
+                                    </td>
+                                    <td class="rdo-numero-cell" style="width: 146px; vertical-align: top;" rowspan="3">
+                                        <div class="label-input-pair numero-rdo-container">
+                                            <label for="numero_rdo_day0">Número:</label>
+                                            <input type="text" id="numero_rdo_day0" value="1154-A">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="label-input-pair">
+                                            <label for="contrato_num_day0">CONTRATO Nº:</label>
+                                            <input type="text" id="contrato_num_day0" class="medium-input" value="00.598/21">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="label-input-pair">
+                                            <label for="dia_semana_day0">DIA DA SEMANA:</label>
+                                            <input type="text" id="dia_semana_day0" class="medium-input" value="terça-feira">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <div class="label-input-pair" style="flex: 2;">
+                                                <label for="prazo_day0">PRAZO:</label>
+                                                <input type="text" id="prazo_day0" class="medium-input" value="11/07/2026">
+                                            </div>
+                                            <div class="label-input-pair" style="flex: 2;">
+                                                <label for="inicio_obra_day0">INÍCIO:</label>
+                                                <input type="text" id="inicio_obra_day0" class="medium-input" value="03/02/2022">
+                                            </div>
+                                            <div class="label-input-pair" style="flex: 1;">
+                                                <label for="decorridos_day0">DECORRIDOS:</label>
+                                                <input type="text" id="decorridos_day0" class="short-input" value="1154">
+                                            </div>
+                                            <div class="label-input-pair" style="flex: 1;">
+                                                <label for="restantes_day0">RESTANTES:</label>
+                                                <input type="text" id="restantes_day0" class="short-input" value="466">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="weather-conditions">
+                            <div class="shift-items-panel">
+                                <div class="panel-title-bar">&nbsp;</div>
+                                <div class="shift-items-content">
+                                    <div class="modelo-label-container">
+                                        <span class="modelo-text">Modelo</span>
+                                    </div>
+                                    <div class="tempo-trabalho-labels">
+                                        <p>Tempo</p>
+                                        <p>Trabalho</p>
+                                    </div>
+                                    <div class="static-shift-control-display">
+                                        <div class="static-toggle-half static-toggle-top">B</div>
+                                        <div class="static-toggle-half static-toggle-bottom">N</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table>
+                                <colgroup>
+                                    <col style="width: 15%;">
+                                    <col style="width: 15%;">
+                                    <col style="width: 15%;">
+                                    <col style="width: 55%;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th class="main-header-cell" colspan="3">CONDIÇÕES CLIMÁTICAS E DE TRABALHO</th>
+                                        <th class="pluviometrico-header-cell" colspan="1">
+                                            Índice Pluviométrico: <input type="number" id="indice_pluv_valor_day0" step="0.1" aria-label="Índice Pluviométrico em milímetros">
+                                            <span id="indice_pluv_status_day0" class="rainfall-status" aria-live="polite"></span> mm
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th class="turno-label-cell">1º Turno<br><span class="turno-time-cell">7:00 as 12:00</span></th>
+                                        <th class="turno-label-cell">2º Turno<br><span class="turno-time-cell">12:00 as 17:00</span></th>
+                                        <th class="turno-label-cell">3º Turno<br><span class="turno-time-cell">17:00 as 22:00</span></th>
+                                        <th class="obs-header-cell" rowspan="2">Observações:</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="data-input-cell" id="turno1_control_cell_day0" rowspan="2">
+                                        </td>
+                                        <td class="data-input-cell" id="turno2_control_cell_day0" rowspan="2">
+                                        </td>
+                                        <td class="data-input-cell" id="turno3_control_cell_day0" rowspan="2">
+                                        </td>
+                                        <td class="obs-cell-td" rowspan="2"><textarea id="obs_clima_day0" aria-label="Observações Climáticas"></textarea></td>
+                                    </tr>
+                                    <tr>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="legend">
+                            <strong>Legendas: Tempo</strong> - Bom (B) Chuva Leve (L) Chuva Forte (F) &nbsp;&nbsp; <strong>Trabalho</strong> - Normal (N) Frentes Paralisadas (P) Tudo Paralisado (T)
+                        </div>
+
+                        <div class="labor-section">
+                            <div class="labor-column labor-direta">
+                                <h4>MÃO DE OBRA DIRETA</h4>
+                                <table class="labor-table" id="laborDiretaTable_day0">
+                                    <tbody>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Ajudante"></td>
+                                            <td class="item-name-cell">Ajudante</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Ajudante de elétrica"></td>
+                                            <td class="item-name-cell">Ajudante de elétrica</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Ajudante montador"></td>
+                                            <td class="item-name-cell">Ajudante montador</td>
+                                        </tr>
+                                         <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Armador"></td>
+                                            <td class="item-name-cell">Armador</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Caldeireiro"></td>
+                                            <td class="item-name-cell">Caldeireiro</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Carpinteiro"></td>
+                                            <td class="item-name-cell">Carpinteiro</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Eletricista"></td>
+                                            <td class="item-name-cell">Eletricista</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Isolador térmico"></td>
+                                            <td class="item-name-cell">Isolador térmico</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Injetor"></td>
+                                            <td class="item-name-cell">Injetor</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Lixador"></td>
+                                            <td class="item-name-cell">Lixador</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Mecânico Montador"></td>
+                                            <td class="item-name-cell">Mecânico Montador</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Meio Oficial Montador"></td>
+                                            <td class="item-name-cell">Meio Oficial Montador</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Montador de Estrutura"></td>
+                                            <td class="item-name-cell">Montador de Estrutura</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Motorista"></td>
+                                            <td class="item-name-cell">Motorista</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Operador de máquinas"></td>
+                                            <td class="item-name-cell">Operador de máquinas</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Pedreiro"></td>
+                                            <td class="item-name-cell">Pedreiro</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Pintor"></td>
+                                            <td class="item-name-cell">Pintor</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Soldador"></td>
+                                            <td class="item-name-cell">Soldador</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="total-field"><label>Total M.O.D =</label><input type="number" min="0" value="0" readonly class="section-total-input" aria-label="Total Mão de Obra Direta"></div>
+                            </div>
+
+                            <div class="labor-column labor-indireta">
+                                <h4>MÃO DE OBRA INDIRETA</h4>
+                                 <table class="labor-table" id="laborIndiretaTable_day0">
+                                    <tbody>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Almoxarife"></td><td class="item-name-cell">Almoxarife</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Apontador I"></td><td class="item-name-cell">Apontador I</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Aprendiz"></td><td class="item-name-cell">Aprendiz</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Auxiliar de RH"></td><td class="item-name-cell">Auxiliar de RH</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Auxiliar de Cozinha"></td><td class="item-name-cell">Auxiliar de Cozinha</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Aux. de Engenharia"></td><td class="item-name-cell">Aux. de Engenharia</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Aux. de Laboratório"></td><td class="item-name-cell">Aux. de Laboratório</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Aux. de Serviço Gerais"></td><td class="item-name-cell">Aux. de Serviço Gerais</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Aux. de Topografia"></td><td class="item-name-cell">Aux. de Topografia</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Cadista - Desenhista"></td><td class="item-name-cell">Cadista - Desenhista</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Coordenadora de RH"></td><td class="item-name-cell">Coordenadora de RH</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Contabilidade"></td><td class="item-name-cell">Contabilidade</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Enc.de Obras I"></td><td class="item-name-cell">Enc.de Obras I</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Enc.de Obras III"></td><td class="item-name-cell">Enc.de Obras III</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Feitor de Obras"></td><td class="item-name-cell">Feitor de Obras</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Laboratorista"></td><td class="item-name-cell">Laboratorista</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Mestre de Obras"></td><td class="item-name-cell">Mestre de Obras</td></tr>
+                                        <tr class="no-bottom-border"><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Topógrafo"></td><td class="item-name-cell">Topógrafo</td></tr>
+                                        <tr class="force-column-break-before"><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Eng. assist. de plan."></td><td class="item-name-cell">Eng. assist. de plan.</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Eng. civil (plan.)"></td><td class="item-name-cell">Eng. civil (plan.)</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Eng. civil (Prod.)"></td><td class="item-name-cell">Eng. civil (Prod.)</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Eng. de prod. (Qual.)"></td><td class="item-name-cell">Eng. de prod. (Qual.)</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Eng. de Seg. do Trab."></td><td class="item-name-cell">Eng. de Seg. do Trab.</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Engenheiro Elétrico"></td><td class="item-name-cell">Engenheiro Elétrico</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Engenheiro Mecânico"></td><td class="item-name-cell">Engenheiro Mecânico</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Gerente Adm. Fin."></td><td class="item-name-cell">Gerente Adm. Fin.</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Gerente de Contrato"></td><td class="item-name-cell">Gerente de Contrato</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Gerente de Plan."></td><td class="item-name-cell">Gerente de Plan.</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Supervisor ADM"></td><td class="item-name-cell">Supervisor ADM</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Téc. de Elétrica"></td><td class="item-name-cell">Téc. de Elétrica</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Téc. de Obras Civis"></td><td class="item-name-cell">Téc. de Obras Civis</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Téc. de Hidráulica"></td><td class="item-name-cell">Téc. de Hidráulica</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Téc. de Mecânica"></td><td class="item-name-cell">Téc. de Mecânica</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Téc. de Planejamento"></td><td class="item-name-cell">Téc. de Planejamento</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Téc. de Qualidade"></td><td class="item-name-cell">Téc. de Qualidade</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Téc. de Seg. do trab."></td><td class="item-name-cell">Téc. de Seg. do trab.</td></tr>
+                                    </tbody>
+                                </table>
+                                <div class="total-field"><label>Total M.O.I =</label><input type="number" min="0" value="0" readonly class="section-total-input" aria-label="Total Mão de Obra Indireta"></div>
+                            </div>
+
+                            <div class="labor-column equipamentos">
+                                <h4>EQUIPAMENTOS</h4>
+                                <table class="labor-table" id="equipamentosTable_day0">
+                                    <tbody>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Betoneira 400 L"></td><td class="item-name-cell">Betoneira 400 L</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Bomba LAM. 3 C/MANG."></td><td class="item-name-cell">Bomba LAM. 3" C/MANG.</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Bomba 2 e 2,5cv"></td><td class="item-name-cell">Bomba 2 e 2,5cv</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Bomba Lança"></td><td class="item-name-cell">Bomba Lança</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Bate-estaca"></td><td class="item-name-cell">Bate-estaca</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Caminhão Betoneira"></td><td class="item-name-cell">Caminhão Betoneira</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Caminhão munck"></td><td class="item-name-cell">Caminhão munck</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Caminhão pipa"></td><td class="item-name-cell">Caminhão pipa</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Compressor 150PCM"></td><td class="item-name-cell">Compressor 150PCM</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Compactador/sapinho"></td><td class="item-name-cell">Compactador/sapinho</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Demolidor 30kg 2P 2T"></td><td class="item-name-cell">Demolidor 30kg 2P 2T</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Escavadeira"></td><td class="item-name-cell">Escavadeira</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Esmerilhadeira 4"></td><td class="item-name-cell">Esmerilhadeira 4"</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Furadeira"></td><td class="item-name-cell">Furadeira</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Guindaste 85tn"></td><td class="item-name-cell">Guindaste 85tn</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Lavadora Wap"></td><td class="item-name-cell">Lavadora Wap</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Lixadeira"></td><td class="item-name-cell">Lixadeira</td></tr>
+                                        <tr class="no-bottom-border"><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Lixadeira 7"></td><td class="item-name-cell">Lixadeira 7"</td></tr>
+                                        <tr class="force-column-break-before"><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Lixadeira 7 c/flange"></td><td class="item-name-cell">Lixadeira 7" c/flange</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Mangote 35/45mm"></td><td class="item-name-cell">Mangote 35/45mm</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Martelete 5 kg"></td><td class="item-name-cell">Martelete 5 kg</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Martelete 10kg"></td><td class="item-name-cell">Martelete 10kg</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Mart. furador c/punho"></td><td class="item-name-cell">Mart. furador c/punho</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Máq. dobra-corte aço"></td><td class="item-name-cell">Máq. dobra-corte aço</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Misturador"></td><td class="item-name-cell">Misturador</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Motovibrador"></td><td class="item-name-cell">Motovibrador</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Motovib. mang. Gas."></td><td class="item-name-cell">Motovib. mang. Gas.</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Perfuratriz Est. Raiz"></td><td class="item-name-cell">Perfuratriz Est. Raiz</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Plataforma Elevatória"></td><td class="item-name-cell">Plataforma Elevatória</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Policorte"></td><td class="item-name-cell">Policorte</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Retroescavadeira"></td><td class="item-name-cell">Retroescavadeira</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Serra Circular 7"></td><td class="item-name-cell">Serra Circular 7"</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Serra Circular 9"></td><td class="item-name-cell">Serra Circular 9"</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Serra circular"></td><td class="item-name-cell">Serra circular</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Serra Marmore"></td><td class="item-name-cell">Serra Marmore</td></tr>
+                                        <tr><td class="quantity-input-cell"><input type="number" min="0" class="quantity-input" aria-label="Quantidade para Serra Tico Tico"></td><td class="item-name-cell">Serra Tico Tico</td></tr>
+                                    </tbody>
+                                </table>
+                                <div class="total-field"><label>Total Equip. =</label><input type="number" min="0" value="0" readonly class="section-total-input" aria-label="Total Equipamentos"></div>
+                            </div>
+                        </div>
+
+                        <div class="activities-section">
+                            <h4>DESCRIÇÃO DAS ATIVIDADES EXECUTADAS</h4>
+                            <table id="activitiesTable_day0">
+                                <thead>
+                                    <tr>
+                                        <th>LOCALIZAÇÃO</th>
+                                        <th>TIPO</th>
+                                        <th>SERVIÇOS</th>
+                                        <th>STATUS</th>
+                                        <th>OBSERVAÇÕES</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="signatures signatures-pt1">
+                            <h4>ASSINATURAS</h4>
+                            <div class="signature-block-container">
+                                <div class="signature-block">
+                                    <div class="photo-attachment-area">
+                                        <label for="consbemPhoto_day0" class="photo-upload-button" role="button" tabindex="0" aria-controls="consbemPhotoPreview_day0 consbemPhotoContainer_day0">Anexar Foto</label>
+                                        <input type="file" id="consbemPhoto_day0" accept="image/*" style="display: none;">
+                                        <div id="consbemPhotoContainer_day0" class="photo-preview-container" style="display: none;">
+                                            <img id="consbemPhotoPreview_day0" src="#" alt="" class="photo-preview-image">
+                                            <button type="button" id="clearConsbemPhoto_day0" class="clear-photo-button" aria-controls="consbemPhotoPreview_day0 consbemPhotoContainer_day0 consbemPhoto_day0">X</button>
+                                        </div>
+                                    </div>
+                                    <div class="signature-content">
+                                        <div class="signature-space" aria-label="Espaço para assinatura do Responsável CONSBEM"></div>
+                                        <p class="responsible-text">RESPONSAVEL CONSBEM</p>
+                                    </div>
+                                </div>
+                                <div class="signature-block">
+                                    <div class="photo-attachment-area">
+                                    </div>
+                                    <div class="signature-content">
+                                        <div class="signature-space" aria-label="Espaço para assinatura da Fiscalização SABESP"></div>
+                                        <p class="responsible-text">FISCALIZAÇÃO SABESP</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rdo-container" id="rdo_day_0_page_1">
+                        <div class="header">
+                            <img src="https://i.imgur.com/dR8PwKc.png" alt="Sabesp Logo" class="header-logo sabesp-logo">
+                            <div class="titles">
+                                <h1>RDO - RELATÓRIO DIÁRIO DE OBRAS</h1>
+                                <h2>SABESP - COMPANHIA DE SANEAMENTO BÁSICO DO ESTADO DE SÃO PAULO</h2>
+                                <h3>AMPLIAÇÃO DA CAPACIDADE DE TRATAMENTO DA FASE SÓLIDA-ETE BARUERI PARA 16M³/S</h3>
+                            </div>
+                            <img src="https://i.imgur.com/GJU4562.png" alt="Consórcio Logo" class="header-logo consorcio-logo">
+                        </div>
+
+                        <div class="contract-info">
+                            <table>
+                                <tr>
+                                    <td style="width: 70%;">
+                                        <div class="label-input-pair">
+                                            <label for="contratada_pt_day0">CONTRATADA:</label>
+                                            <input type="text" id="contratada_pt_day0" name="contratada_pt_day0" class="contratada-input" value="Consórcio Consbem-Enfil-Aquamec-Barueri" readonly>
+                                        </div>
+                                    </td>
+                                    <td style="width: 20%;">
+                                        <div class="label-input-pair">
+                                            <label for="data_pt_day0">DATA:</label>
+                                            <input type="date" id="data_pt_day0" name="data_pt_day0" class="date-input" value="2025-04-01" readonly>
+                                        </div>
+                                    </td>
+                                    <td class="rdo-numero-cell" style="width: 146px; vertical-align: top;" rowspan="3">
+                                        <div class="label-input-pair numero-rdo-container">
+                                            <label for="numero_rdo_pt_day0">Número:</label>
+                                            <input type="text" id="numero_rdo_pt_day0" name="numero_rdo_pt_day0" value="1154-B" readonly>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="label-input-pair">
+                                            <label for="contrato_num_pt_day0">CONTRATO Nº:</label>
+                                            <input type="text" id="contrato_num_pt_day0" name="contrato_num_pt_day0" class="medium-input" value="00.598/21" readonly>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="label-input-pair">
+                                            <label for="dia_semana_pt_day0">DIA DA SEMANA:</label>
+                                            <input type="text" id="dia_semana_pt_day0" name="dia_semana_pt_day0" class="medium-input" value="terça-feira" readonly>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <div class="label-input-pair" style="flex: 2;">
+                                                <label for="prazo_pt_day0">PRAZO:</label>
+                                                <input type="text" id="prazo_pt_day0" name="prazo_pt_day0" class="medium-input" value="11/07/2026" readonly>
+                                            </div>
+                                            <div class="label-input-pair" style="flex: 2;">
+                                                <label for="inicio_obra_pt_day0">INÍCIO:</label>
+                                                <input type="text" id="inicio_obra_pt_day0" name="inicio_obra_pt_day0" class="medium-input" value="03/02/2022" readonly>
+                                            </div>
+                                            <div class="label-input-pair" style="flex: 1;">
+                                                <label for="decorridos_pt_day0">DECORRIDOS:</label>
+                                                <input type="text" id="decorridos_pt_day0" name="decorridos_pt_day0" class="short-input" value="1154" readonly>
+                                            </div>
+                                            <div class="label-input-pair" style="flex: 1;">
+                                                <label for="restantes_pt_day0">RESTANTES:</label>
+                                                <input type="text" id="restantes_pt_day0" name="restantes_pt_day0" class="short-input" value="466" readonly>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="page-specific-content" style="min-height: 400px; border-left: none; border-right: none; margin-left: -15px; margin-right: -15px;">
+                            <div class="activities-section">
+                                <h4>DESCRIÇÃO DAS ATIVIDADES EXECUTADAS</h4>
+                                <table id="activitiesTable_pt_day0">
+                                    <thead>
+                                        <tr>
+                                            <th>LOCALIZAÇÃO</th>
+                                            <th>TIPO</th>
+                                            <th>SERVIÇOS</th>
+                                            <th>STATUS</th>
+                                            <th>OBSERVAÇÕES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="other-observations-section">
+                                <table id="observationsCommentsTable_pt_day0">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="1">OUTRAS OBSERVAÇÕES E COMENTÁRIOS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="observations-lines-container"></div>
+                                                <textarea id="observacoes_comentarios_pt_day0" class="observations-textarea" aria-label="Outras Observações e Comentários Dia 0"></textarea>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="signatures">
+                            <h4>ASSINATURAS</h4>
+                            <div class="signature-block-container">
+                                <div class="signature-block">
+                                    <div class="photo-attachment-area">
+                                        <label for="consbemPhoto_pt_day0" class="photo-upload-button" role="button" tabindex="0" aria-controls="consbemPhotoPreview_pt_day0 consbemPhotoContainer_pt_day0" style="display: none !important;">Anexar Foto</label>
+                                        <input type="file" id="consbemPhoto_pt_day0" name="consbem_photo_pt_day0" accept="image/*" style="display: none;">
+                                        <div id="consbemPhotoContainer_pt_day0" class="photo-preview-container" style="display: none;">
+                                            <img id="consbemPhotoPreview_pt_day0" src="#" alt="" class="photo-preview-image">
+                                            <button type="button" id="clearConsbemPhoto_pt_day0" class="clear-photo-button" aria-controls="consbemPhotoPreview_pt_day0 consbemPhotoContainer_pt_day0 consbemPhoto_pt_day0">X</button>
+                                        </div>
+                                    </div>
+                                    <div class="signature-content">
+                                        <div class="signature-space" aria-label="Espaço para assinatura do Responsável CONSBEM"></div>
+                                        <p class="responsible-text">RESPONSAVEL CONSBEM</p>
+                                    </div>
+                                </div>
+                                <div class="signature-block">
+                                    <div class="photo-attachment-area">
+                                    </div>
+                                    <div class="signature-content">
+                                        <div class="signature-space" aria-label="Espaço para assinatura da Fiscalização SABESP"></div>
+                                        <p class="responsible-text">FISCALIZAÇÃO SABESP</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rdo-container" id="rdo_day_0_page_2">
+                        <div class="header">
+                            <img src="https://i.imgur.com/dR8PwKc.png" alt="Sabesp Logo" class="header-logo sabesp-logo">
+                            <div class="titles">
+                                <h1>RDO - RELATÓRIO DIÁRIO DE OBRAS</h1>
+                                <h2>SABESP - COMPANHIA DE SANEAMENTO BÁSICO DO ESTADO DE SÃO PAULO</h2>
+                                <h3>AMPLIAÇÃO DA CAPACIDADE DE TRATAMENTO DA FASE SÓLIDA-ETE BARUERI PARA 16M³/S</h3>
+                            </div>
+                            <img src="https://i.imgur.com/GJU4562.png" alt="Consórcio Logo" class="header-logo consorcio-logo">
+                        </div>
+
+                        <div class="contract-info">
+                            <table>
+                                <tr>
+                                    <td style="width: 70%;">
+                                        <div class="label-input-pair">
+                                            <label for="contratada_pt2_day0">CONTRATADA:</label>
+                                            <input type="text" id="contratada_pt2_day0" name="contratada_pt2_day0" class="contratada-input" value="Consórcio Consbem-Enfil-Aquamec-Barueri" readonly>
+                                        </div>
+                                    </td>
+                                    <td style="width: 20%;">
+                                        <div class="label-input-pair">
+                                            <label for="data_pt2_day0">DATA:</label>
+                                            <input type="date" id="data_pt2_day0" name="data_pt2_day0" class="date-input" value="2025-04-01" readonly>
+                                        </div>
+                                    </td>
+                                    <td class="rdo-numero-cell" style="width: 146px; vertical-align: top;" rowspan="3">
+                                        <div class="label-input-pair numero-rdo-container">
+                                            <label for="numero_rdo_pt2_day0">Número:</label>
+                                            <input type="text" id="numero_rdo_pt2_day0" name="numero_rdo_pt2_day0" value="1154-C" readonly>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="label-input-pair">
+                                            <label for="contrato_num_pt2_day0">CONTRATO Nº:</label>
+                                            <input type="text" id="contrato_num_pt2_day0" name="contrato_num_pt2_day0" class="medium-input" value="00.598/21" readonly>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="label-input-pair">
+                                            <label for="dia_semana_pt2_day0">DIA DA SEMANA:</label>
+                                            <input type="text" id="dia_semana_pt2_day0" name="dia_semana_pt2_day0" class="medium-input" value="terça-feira" readonly>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <div class="label-input-pair" style="flex: 2;">
+                                                <label for="prazo_pt2_day0">PRAZO:</label>
+                                                <input type="text" id="prazo_pt2_day0" name="prazo_pt2_day0" class="medium-input" value="11/07/2026" readonly>
+                                            </div>
+                                            <div class="label-input-pair" style="flex: 2;">
+                                                <label for="inicio_obra_pt2_day0">INÍCIO:</label>
+                                                <input type="text" id="inicio_obra_pt2_day0" name="inicio_obra_pt2_day0" class="medium-input" value="03/02/2022" readonly>
+                                            </div>
+                                            <div class="label-input-pair" style="flex: 1;">
+                                                <label for="decorridos_pt2_day0">DECORRIDOS:</label>
+                                                <input type="text" id="decorridos_pt2_day0" name="decorridos_pt2_day0" class="short-input" value="1154" readonly>
+                                            </div>
+                                            <div class="label-input-pair" style="flex: 1;">
+                                                <label for="restantes_pt2_day0">RESTANTES:</label>
+                                                <input type="text" id="restantes_pt2_day0" name="restantes_pt2_day0" class="short-input" value="466" readonly>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="page-specific-content" style="min-height: 400px; border-left: none; border-right: none; margin-left: -15px; margin-right: -15px;">
+                            <h4 class="photographic-report-title-pt2">RELATÓRIO FOTOGRÁFICO</h4>
+                            <div class="photographic-report-grid-pt2">
+                                <div class="photographic-report-item-pt2">
+                                    <input type="file" id="report_photo_1_pt2_input_day0" accept="image/*" style="display: none;">
+                                    <label id="report_photo_1_pt2_label_day0" for="report_photo_1_pt2_input_day0" class="report-photo-label-pt2" role="button" tabindex="0" aria-label="Anexar Foto 01">
+                                        <div id="report_photo_1_pt2_placeholder_day0" class="report-photo-placeholder-pt2"></div>
+                                        <img id="report_photo_1_pt2_preview_day0" src="#" alt="Pré-visualização Foto 01" class="report-photo-image-pt2" style="display: none;">
+                                        <button type="button" id="report_photo_1_pt2_clear_button_day0" class="report-item-clear-button-pt2" style="display: none;">X</button>
+                                    </label>
+                                    <div class="photo-caption-area-pt2">
+                                        <span>Foto 01:</span>
+                                        <input type="text" id="report_photo_1_pt2_caption_day0" value="" aria-label="Legenda Foto 01">
+                                    </div>
+                                </div>
+                                <div class="photographic-report-item-pt2">
+                                    <input type="file" id="report_photo_2_pt2_input_day0" accept="image/*" style="display: none;">
+                                    <label id="report_photo_2_pt2_label_day0" for="report_photo_2_pt2_input_day0" class="report-photo-label-pt2" role="button" tabindex="0" aria-label="Anexar Foto 02">
+                                        <div id="report_photo_2_pt2_placeholder_day0" class="report-photo-placeholder-pt2"></div>
+                                        <img id="report_photo_2_pt2_preview_day0" src="#" alt="Pré-visualização Foto 02" class="report-photo-image-pt2" style="display: none;">
+                                        <button type="button" id="report_photo_2_pt2_clear_button_day0" class="report-item-clear-button-pt2" style="display: none;">X</button>
+                                    </label>
+                                    <div class="photo-caption-area-pt2">
+                                        <span>Foto 02:</span>
+                                        <input type="text" id="report_photo_2_pt2_caption_day0" value="" aria-label="Legenda Foto 02">
+                                    </div>
+                                </div>
+                                <div class="photographic-report-item-pt2">
+                                    <input type="file" id="report_photo_3_pt2_input_day0" accept="image/*" style="display: none;">
+                                    <label id="report_photo_3_pt2_label_day0" for="report_photo_3_pt2_input_day0" class="report-photo-label-pt2" role="button" tabindex="0" aria-label="Anexar Foto 03">
+                                        <div id="report_photo_3_pt2_placeholder_day0" class="report-photo-placeholder-pt2"></div>
+                                        <img id="report_photo_3_pt2_preview_day0" src="#" alt="Pré-visualização Foto 03" class="report-photo-image-pt2" style="display: none;">
+                                        <button type="button" id="report_photo_3_pt2_clear_button_day0" class="report-item-clear-button-pt2" style="display: none;">X</button>
+                                    </label>
+                                    <div class="photo-caption-area-pt2">
+                                        <span>Foto 03:</span>
+                                        <input type="text" id="report_photo_3_pt2_caption_day0" value="" aria-label="Legenda Foto 03">
+                                    </div>
+                                </div>
+                                <div class="photographic-report-item-pt2">
+                                    <input type="file" id="report_photo_4_pt2_input_day0" accept="image/*" style="display: none;">
+                                    <label id="report_photo_4_pt2_label_day0" for="report_photo_4_pt2_input_day0" class="report-photo-label-pt2" role="button" tabindex="0" aria-label="Anexar Foto 04">
+                                        <div id="report_photo_4_pt2_placeholder_day0" class="report-photo-placeholder-pt2"></div>
+                                        <img id="report_photo_4_pt2_preview_day0" src="#" alt="Pré-visualização Foto 04" class="report-photo-image-pt2" style="display: none;">
+                                        <button type="button" id="report_photo_4_pt2_clear_button_day0" class="report-item-clear-button-pt2" style="display: none;">X</button>
+                                    </label>
+                                    <div class="photo-caption-area-pt2">
+                                        <span>Foto 04:</span>
+                                        <input type="text" id="report_photo_4_pt2_caption_day0" value="" aria-label="Legenda Foto 04">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="empty-panel-on-page">
+                            </div>
+                        </div>
+
+                        <div class="signatures signatures-pt2">
+                            <h4>ASSINATURAS</h4>
+                            <div class="signature-block-container">
+                                <div class="signature-block">
+                                    <div class="photo-attachment-area">
+                                        <label for="consbemPhoto_pt2_day0" class="photo-upload-button" role="button" tabindex="0" aria-controls="consbemPhotoPreview_pt2_day0 consbemPhotoContainer_pt2_day0" style="display: none !important;">Anexar Foto</label>
+                                        <input type="file" id="consbemPhoto_pt2_day0" name="consbem_photo_pt2_day0" accept="image/*" style="display: none;">
+                                        <div id="consbemPhotoContainer_pt2_day0" class="photo-preview-container" style="display: none;">
+                                            <img id="consbemPhotoPreview_pt2_day0" src="#" alt="" class="photo-preview-image">
+                                            <button type="button" id="clearConsbemPhoto_pt2_day0" class="clear-photo-button" aria-controls="consbemPhotoPreview_pt2_day0 consbemPhotoContainer_pt2_day0 consbemPhoto_pt2_day0">X</button>
+                                        </div>
+                                    </div>
+                                    <div class="signature-content">
+                                        <div class="signature-space" aria-label="Espaço para assinatura do Responsável CONSBEM"></div>
+                                        <p class="responsible-text">RESPONSAVEL CONSBEM</p>
+                                    </div>
+                                </div>
+                                <div class="signature-block">
+                                    <div class="photo-attachment-area">
+                                    </div>
+                                    <div class="signature-content">
+                                        <div class="signature-space" aria-label="Espaço para assinatura da Fiscalização SABESP"></div>
+                                        <p class="responsible-text">FISCALIZAÇÃO SABESP</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End rdo-all-days-wrapper -->
+        </div> <!-- End app-content-canvas -->
+
+        <div class="manual-fetch-controls">
+            <div id="rainfallProgressBarWrapper" style="display: none; margin-bottom: 5px; background-color: #fff; padding: 8px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); width: 250px;">
+                <div id="rainfallProgressDetailsText" style="font-size: 0.75rem; color: #333; text-align: center; margin-bottom: 6px;">Buscando dados...</div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div id="rainfallProgressBarContainer" style="flex-grow: 1; height: 10px; background-color: #e9ecef; border-radius: 5px; overflow: hidden; border: 1px solid #ced4da;">
+                        <div id="rainfallProgressBar" style="height: 100%; width: 0%; background-color: var(--consbem-blue); border-radius: 5px; transition: width 0.3s ease-out;"></div>
+                    </div>
+                    <span id="rainfallProgressText" style="font-size: 0.75rem; color: #333; white-space: nowrap;">0/0</span>
+                </div>
+            </div>
+            <div id="fetchRainfallMessageContainer" class="fetch-message-container" aria-live="polite" style="display: none;"></div>
+            <div id="saveProgressMessageContainer" class="fetch-message-container" aria-live="polite" style="display: none;"></div>
+            <button id="addDayButton" class="header-action-button" style="display:none;">Add Day</button>
+            <button id="removeDayButton" class="header-action-button" style="display:none;">Remove Last Day</button>
+            <button id="loadProgressButton" class="header-action-button" style="display:none;">Load Progress</button>
+            <button id="clearProgressButton" class="header-action-button" style="display:none;">Clear Progress</button>
+        </div>
+
+        <script type="module" src="index.js"></script>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "name": "RDO js - v1",
+  "description": "Let Gemini execute Python code in a sandbox",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "prompt": ""
+}
